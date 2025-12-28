@@ -1,0 +1,356 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Anemia Prediction System{% endblock %}
+
+{% block extra_css %}
+<style>
+    .hero-section {
+        padding: 100px 0;
+        text-align: center;
+        position: relative;
+    }
+
+    .hero-title {
+        font-size: 4rem;
+        font-weight: 700;
+        color: white;
+        text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        animation: fadeInDown 1s ease-out;
+        margin-bottom: 1.5rem;
+    }
+
+    @keyframes fadeInDown {
+        from {
+            transform: translateY(-50px);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    .hero-subtitle {
+        font-size: 1.5rem;
+        color: rgba(255, 255, 255, 0.9);
+        margin-bottom: 2rem;
+        animation: fadeInUp 1s ease-out 0.2s both;
+    }
+
+    .hero-buttons {
+        animation: fadeInUp 1s ease-out 0.4s both;
+    }
+
+    .btn-hero {
+        padding: 15px 40px;
+        font-size: 1.1rem;
+        border-radius: 50px;
+        margin: 0 10px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary-hero {
+        background: white;
+        color: #667eea;
+        border: 2px solid white;
+    }
+
+    .btn-primary-hero:hover {
+        background: transparent;
+        color: white;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(255, 255, 255, 0.3);
+    }
+
+    .btn-outline-hero {
+        background: transparent;
+        color: white;
+        border: 2px solid white;
+    }
+
+    .btn-outline-hero:hover {
+        background: white;
+        color: #667eea;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(255, 255, 255, 0.3);
+    }
+
+    .features-section {
+        padding: 80px 0;
+    }
+
+    .feature-card {
+        text-align: center;
+        padding: 40px 20px;
+        margin-bottom: 30px;
+        animation: fadeInUp 0.8s ease-out;
+        animation-fill-mode: both;
+    }
+
+    .feature-card:nth-child(1) { animation-delay: 0.1s; }
+    .feature-card:nth-child(2) { animation-delay: 0.2s; }
+    .feature-card:nth-child(3) { animation-delay: 0.3s; }
+    .feature-card:nth-child(4) { animation-delay: 0.4s; }
+
+    .feature-icon {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        font-size: 2rem;
+        color: white;
+        transition: all 0.3s ease;
+    }
+
+    .feature-card:hover .feature-icon {
+        transform: rotateY(360deg);
+        box-shadow: 0 8px 30px rgba(102, 126, 234, 0.5);
+    }
+
+    .feature-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 15px;
+        color: #333;
+    }
+
+    .feature-text {
+        color: #666;
+        line-height: 1.6;
+    }
+
+    .stats-section {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        padding: 60px 0;
+        margin: 60px 0;
+        border-radius: 30px;
+    }
+
+    .stat-item {
+        text-align: center;
+        color: white;
+        animation: countUp 2s ease-out;
+    }
+
+    .stat-number {
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+        text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .stat-label {
+        font-size: 1.2rem;
+        opacity: 0.9;
+    }
+
+    @keyframes countUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .cta-section {
+        text-align: center;
+        padding: 80px 0;
+    }
+
+    .cta-card {
+        background: rgba(255, 255, 255, 0.95);
+        padding: 60px 40px;
+        border-radius: 30px;
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% {
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        50% {
+            box-shadow: 0 12px 48px rgba(102, 126, 234, 0.3);
+        }
+    }
+
+    .cta-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .blood-cell {
+        position: fixed;
+        width: 40px;
+        height: 40px;
+        background: radial-gradient(circle, #ff6b6b, #c92a2a);
+        border-radius: 50%;
+        opacity: 0.3;
+        animation: float-blood 6s infinite ease-in-out;
+        pointer-events: none;
+        z-index: -1;
+    }
+
+    @keyframes float-blood {
+        0%, 100% {
+            transform: translateY(0) translateX(0) scale(1);
+        }
+        25% {
+            transform: translateY(-100px) translateX(50px) scale(1.2);
+        }
+        50% {
+            transform: translateY(-50px) translateX(-50px) scale(0.8);
+        }
+        75% {
+            transform: translateY(-150px) translateX(30px) scale(1.1);
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="hero-section">
+    <div class="container">
+        <h1 class="hero-title">
+            <i class="fas fa-heartbeat"></i> Anemia Prediction System
+        </h1>
+        <p class="hero-subtitle">
+            Advanced AI-Powered Blood Analysis for Early Anemia Detection
+        </p>
+        <div class="hero-buttons">
+            {% if session.user_id %}
+                <a href="{{ url_for('predict') }}" class="btn btn-primary-hero btn-hero">
+                    <i class="fas fa-chart-line"></i> Start Prediction
+                </a>
+                <a href="{{ url_for('analytics') }}" class="btn btn-outline-hero btn-hero">
+                    <i class="fas fa-chart-bar"></i> View Analytics
+                </a>
+            {% else %}
+                <a href="{{ url_for('register') }}" class="btn btn-primary-hero btn-hero">
+                    <i class="fas fa-user-plus"></i> Get Started
+                </a>
+                <a href="{{ url_for('login') }}" class="btn btn-outline-hero btn-hero">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </a>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<div class="container">
+    <div class="stats-section">
+        <div class="row">
+            <div class="col-md-3 stat-item">
+                <div class="stat-number">98%</div>
+                <div class="stat-label">Accuracy</div>
+            </div>
+            <div class="col-md-3 stat-item">
+                <div class="stat-number">10K+</div>
+                <div class="stat-label">Predictions</div>
+            </div>
+            <div class="col-md-3 stat-item">
+                <div class="stat-number">5000+</div>
+                <div class="stat-label">Users</div>
+            </div>
+            <div class="col-md-3 stat-item">
+                <div class="stat-number">24/7</div>
+                <div class="stat-label">Available</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="features-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="card feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3 class="feature-title">AI-Powered</h3>
+                    <p class="feature-text">
+                        Advanced XGBoost machine learning algorithm trained on thousands of blood samples for accurate predictions.
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3 class="feature-title">Instant Results</h3>
+                    <p class="feature-text">
+                        Get your anemia risk assessment in seconds with detailed probability scores and recommendations.
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3 class="feature-title">Secure & Private</h3>
+                    <p class="feature-text">
+                        Your health data is encrypted and stored securely. We prioritize your privacy and data protection.
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3 class="feature-title">Analytics Dashboard</h3>
+                    <p class="feature-text">
+                        Comprehensive visual analytics with SHAP explanations and model performance metrics.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="cta-section">
+    <div class="container">
+        <div class="cta-card">
+            <h2 class="cta-title">Ready to Check Your Health?</h2>
+            <p class="lead mb-4">Join thousands of users who trust our AI-powered anemia prediction system</p>
+            {% if not session.user_id %}
+            <a href="{{ url_for('register') }}" class="btn btn-gradient btn-lg">
+                <i class="fas fa-rocket"></i> Start Your Free Analysis
+            </a>
+            {% else %}
+            <a href="{{ url_for('predict') }}" class="btn btn-gradient btn-lg">
+                <i class="fas fa-chart-line"></i> Make a Prediction
+            </a>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<script>
+    // Create floating blood cells
+    for (let i = 0; i < 8; i++) {
+        const cell = document.createElement('div');
+        cell.className = 'blood-cell';
+        cell.style.left = Math.random() * 100 + '%';
+        cell.style.top = Math.random() * 100 + '%';
+        cell.style.animationDelay = Math.random() * 3 + 's';
+        cell.style.animationDuration = (Math.random() * 3 + 4) + 's';
+        document.body.appendChild(cell);
+    }
+</script>
+{% endblock%}

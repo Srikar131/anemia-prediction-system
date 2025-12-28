@@ -1,0 +1,85 @@
+Permutation Importance: A model-agnostic check of which features matter most (good for validating SHAP).
+
+Partial Dependence Plot (PDP): Shows exactly how the risk changes as Hemoglobin increases (e.g., is the cutoff at 12.0 or 13.0?).
+
+SHAP Beeswarm: The classic view of feature impact and direction.
+
+SHAP Dependence Plot: Checks if features interact (e.g., "Does Gender matter more when Hemoglobin is low?").
+
+SHAP Waterfall (Positive Case): Explains why specific Patient A was diagnosed with Anemia.
+
+SHAP Waterfall (Negative Case): Explains why specific Patient B was cleared.
+
+
+
+Part 1: Global Explanations (The "Big Picture")
+These plots help you understand the model's overall logic and ensure it aligns with medical science.
+
+1. Permutation Importance Plot (01_global_permutation_importance.png)
+What it is: A "stress test" for your model. It asks: "If I randomly scramble the data for Hemoglobin, how much does the model's accuracy crash?"
+
+How to read it:
+
+Longer Bar: The feature is crucial. If you remove it, the model fails.
+
+Short/No Bar: The feature is useless noise. The model doesn't care if you scramble it.
+
+Why it matters: It confirms which variables are actually doing the heavy lifting without relying on complex math.
+
+2. Partial Dependence Plot (PDP) (02_global_partial_dependence.png)
+What it is: This shows the specific mathematical relationship between a feature and the risk of Anemia.
+
+How to read it:
+
+X-Axis: The value of the feature (e.g., Hemoglobin levels from 0 to 20).
+
+Y-Axis: The probability of Anemia.
+
+The Shape: You will likely see a curve that stays high when Hemoglobin is low, and then "drops off a cliff" as Hemoglobin crosses a healthy threshold (e.g., around 12-13 g/dL).
+
+Why it matters: It tells you the exact "tipping point" the model has learned.
+
+3. SHAP Beeswarm Plot (03_shap_beeswarm.png)
+What it is: The most detailed view of feature importance.
+
+How to read it:
+
+Y-Axis: Features ranked by importance.
+
+Color: Red = High value, Blue = Low value.
+
+Position: Right = Higher Anemia Risk, Left = Lower Anemia Risk.
+
+Example: If you see Blue dots (Low Hemoglobin) on the far right, it confirms that low hemoglobin drives high anemia risk.
+
+4. SHAP Dependence Plot (04_shap_dependence.png)
+What it is: This detects Interactions—when two features work together.
+
+How to read it:
+
+It plots one feature (like Hemoglobin) against its SHAP value, but it colors the dots using a second feature (like Gender).
+
+What to look for: Vertical dispersion. If patients with the exact same Hemoglobin level have different risk scores (SHAP values), look at the color. It implies that the second feature (Gender) is changing the risk profile for that specific Hemoglobin level.
+
+Part 2: Local Explanations (The "Patient Stories")
+These are the most useful plots for a doctor. They explain individual predictions.
+
+5. SHAP Waterfall Plot - Positive Case (05_local_waterfall_anemia.png)
+What it is: A step-by-step breakdown of why Patient A was diagnosed with Anemia.
+
+How to read it:
+
+Start (Bottom): The graph starts at the "Expected Value" (the average risk for any random person in the dataset).
+
+Steps (Arrows): Each arrow shows how a specific feature pushed the probability up (Red) or down (Blue).
+
+End (Top): The final prediction score.
+
+Narrative: "This patient started with an average risk. However, their Hemoglobin was 9.0 (+3.0 risk), and their MCV was low (+0.5 risk), leading to a final prediction of Anemia."
+
+6. SHAP Waterfall Plot - Negative Case (06_local_waterfall_healthy.png)
+What it is: The same as above, but for a patient the model says is Healthy.
+
+How to read it: You will likely see large Blue arrows pushing the score down.
+
+Narrative: "Even though this patient had low MCHC (Red arrow, slight risk), their Hemoglobin was 14.5 (Massive Blue arrow), which overpowered the other factors and confirmed they are healthy."

@@ -1,0 +1,288 @@
+{% extends "base.html" %}
+
+{% block title %}Register - Anemia Prediction System{% endblock %}
+
+{% block extra_css %}
+<style>
+    .auth-container {
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 0;
+    }
+
+    .auth-card {
+        max-width: 500px;
+        width: 100%;
+        padding: 50px;
+        animation: zoomIn 0.5s ease-out;
+    }
+
+    @keyframes zoomIn {
+        from {
+            transform: scale(0.8);
+            opacity: 0;
+        }
+        to {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+
+    .auth-header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .auth-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        font-size: 2rem;
+        color: white;
+        animation: rotate 2s infinite linear;
+    }
+
+    @keyframes rotate {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+
+    .auth-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 10px;
+    }
+
+    .auth-subtitle {
+        color: #666;
+        font-size: 0.95rem;
+    }
+
+    .form-floating {
+        margin-bottom: 20px;
+    }
+
+    .form-control {
+        border: 2px solid #e0e0e0;
+        border-radius: 15px;
+        padding: 15px 20px;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        transform: translateY(-2px);
+    }
+
+    .form-label {
+        color: #666;
+        font-weight: 500;
+    }
+
+    .input-group {
+        margin-bottom: 20px;
+    }
+
+    .input-group-text {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        color: white;
+        border-radius: 15px 0 0 15px;
+    }
+
+    .btn-auth {
+        width: 100%;
+        padding: 15px;
+        font-size: 1.1rem;
+        border-radius: 15px;
+        margin-top: 20px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-auth::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.3);
+        transform: translate(-50%, -50%);
+        transition: width 0.6s, height 0.6s;
+    }
+
+    .btn-auth:hover::before {
+        width: 300px;
+        height: 300px;
+    }
+
+    .auth-footer {
+        text-align: center;
+        margin-top: 30px;
+        padding-top: 30px;
+        border-top: 2px solid #e0e0e0;
+    }
+
+    .auth-link {
+        color: #667eea;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .auth-link:hover {
+        color: #764ba2;
+        text-decoration: underline;
+    }
+
+    .password-strength {
+        height: 5px;
+        border-radius: 10px;
+        margin-top: 10px;
+        transition: all 0.3s ease;
+    }
+
+    .strength-weak { background: #ff4444; width: 33%; }
+    .strength-medium { background: #ffbb33; width: 66%; }
+    .strength-strong { background: #00C851; width: 100%; }
+
+    .floating-icon {
+        position: absolute;
+        font-size: 3rem;
+        opacity: 0.1;
+        animation: float-icon 4s infinite ease-in-out;
+    }
+
+    @keyframes float-icon {
+        0%, 100% { transform: translateY(0) rotate(0deg); }
+        50% { transform: translateY(-30px) rotate(10deg); }
+    }
+
+    #icon1 { top: 10%; left: 10%; animation-delay: 0s; }
+    #icon2 { top: 20%; right: 15%; animation-delay: 1s; }
+    #icon3 { bottom: 20%; left: 15%; animation-delay: 2s; }
+    #icon4 { bottom: 30%; right: 10%; animation-delay: 1.5s; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <i class="fas fa-heartbeat floating-icon" id="icon1"></i>
+    <i class="fas fa-user-md floating-icon" id="icon2"></i>
+    <i class="fas fa-microscope floating-icon" id="icon3"></i>
+    <i class="fas fa-vial floating-icon" id="icon4"></i>
+
+    <div class="card auth-card">
+        <div class="auth-header">
+            <div class="auth-icon">
+                <i class="fas fa-user-plus"></i>
+            </div>
+            <h2 class="auth-title">Create Account</h2>
+            <p class="auth-subtitle">Join us to start your health journey</p>
+        </div>
+
+        <form method="POST" id="registerForm">
+            <div class="input-group">
+                <span class="input-group-text">
+                    <i class="fas fa-user"></i>
+                </span>
+                <div class="form-floating">
+                    <input type="text" class="form-control" id="username" name="username" 
+                           placeholder="Username" required pattern="[a-zA-Z0-9_]{3,20}">
+                    <label for="username">Username</label>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <span class="input-group-text">
+                    <i class="fas fa-envelope"></i>
+                </span>
+                <div class="form-floating">
+                    <input type="email" class="form-control" id="email" name="email" 
+                           placeholder="Email" required>
+                    <label for="email">Email Address</label>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <span class="input-group-text">
+                    <i class="fas fa-lock"></i>
+                </span>
+                <div class="form-floating">
+                    <input type="password" class="form-control" id="password" name="password" 
+                           placeholder="Password" required minlength="6">
+                    <label for="password">Password</label>
+                </div>
+            </div>
+            <div class="password-strength" id="strength-bar"></div>
+
+            <div class="input-group">
+                <span class="input-group-text">
+                    <i class="fas fa-lock"></i>
+                </span>
+                <div class="form-floating">
+                    <input type="password" class="form-control" id="confirm_password" 
+                           name="confirm_password" placeholder="Confirm Password" required>
+                    <label for="confirm_password">Confirm Password</label>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-gradient btn-auth">
+                <i class="fas fa-rocket"></i> Create Account
+            </button>
+        </form>
+
+        <div class="auth-footer">
+            <p class="mb-0">Already have an account? 
+                <a href="{{ url_for('login') }}" class="auth-link">Login here</a>
+            </p>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Password strength indicator
+    document.getElementById('password').addEventListener('input', function() {
+        const password = this.value;
+        const strengthBar = document.getElementById('strength-bar');
+        
+        let strength = 0;
+        if (password.length >= 6) strength++;
+        if (password.length >= 10) strength++;
+        if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++;
+        if (/\d/.test(password)) strength++;
+        if (/[^a-zA-Z0-9]/.test(password)) strength++;
+        
+        strengthBar.className = 'password-strength';
+        if (strength <= 2) {
+            strengthBar.classList.add('strength-weak');
+        } else if (strength <= 4) {
+            strengthBar.classList.add('strength-medium');
+        } else {
+            strengthBar.classList.add('strength-strong');
+        }
+    });
+
+    // Form validation
+    document.getElementById('registerForm').addEventListener('submit', function(e) {
+        const password = document.getElementById('password').value;
+        const confirm = document.getElementById('confirm_password').value;
+        
+        if (password !== confirm) {
+            e.preventDefault();
+            alert('Passwords do not match!');
+        }
+    });
+</script>
+{% endblock %}

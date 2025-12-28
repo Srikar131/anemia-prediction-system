@@ -1,0 +1,310 @@
+{% extends "base.html" %}
+
+{% block title %}Login - Anemia Prediction System{% endblock %}
+
+{% block extra_css %}
+<style>
+    .auth-container {
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 0;
+    }
+
+    .auth-card {
+        max-width: 500px;
+        width: 100%;
+        padding: 50px;
+        animation: slideInLeft 0.6s ease-out;
+    }
+
+    @keyframes slideInLeft {
+        from {
+            transform: translateX(-100px);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+
+    .auth-header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .auth-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        font-size: 2rem;
+        color: white;
+        animation: pulse-icon 2s infinite;
+    }
+
+    @keyframes pulse-icon {
+        0%, 100% {
+            transform: scale(1);
+            box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.7);
+        }
+        50% {
+            transform: scale(1.05);
+            box-shadow: 0 0 0 20px rgba(102, 126, 234, 0);
+        }
+    }
+
+    .auth-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 10px;
+    }
+
+    .auth-subtitle {
+        color: #666;
+        font-size: 0.95rem;
+    }
+
+    .input-group {
+        margin-bottom: 20px;
+    }
+
+    .input-group-text {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        color: white;
+        border-radius: 15px 0 0 15px;
+    }
+
+    .form-control {
+        border: 2px solid #e0e0e0;
+        border-radius: 0 15px 15px 0;
+        padding: 15px 20px;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        transform: translateY(-2px);
+    }
+
+    .form-floating {
+        flex: 1;
+    }
+
+    .form-label {
+        color: #666;
+        font-weight: 500;
+    }
+
+    .btn-auth {
+        width: 100%;
+        padding: 15px;
+        font-size: 1.1rem;
+        border-radius: 15px;
+        margin-top: 20px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-auth::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.3);
+        transform: translate(-50%, -50%);
+        transition: width 0.6s, height 0.6s;
+    }
+
+    .btn-auth:hover::after {
+        width: 400px;
+        height: 400px;
+    }
+
+    .remember-forgot {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 15px;
+    }
+
+    .form-check-label {
+        color: #666;
+        font-size: 0.9rem;
+    }
+
+    .forgot-link {
+        color: #667eea;
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+    }
+
+    .forgot-link:hover {
+        color: #764ba2;
+        text-decoration: underline;
+    }
+
+    .auth-footer {
+        text-align: center;
+        margin-top: 30px;
+        padding-top: 30px;
+        border-top: 2px solid #e0e0e0;
+    }
+
+    .auth-link {
+        color: #667eea;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .auth-link:hover {
+        color: #764ba2;
+        text-decoration: underline;
+    }
+
+    .demo-credentials {
+        background: rgba(102, 126, 234, 0.1);
+        border-left: 4px solid #667eea;
+        padding: 15px;
+        border-radius: 10px;
+        margin-bottom: 25px;
+    }
+
+    .demo-credentials h6 {
+        color: #667eea;
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+
+    .demo-credentials p {
+        margin: 5px 0;
+        font-size: 0.9rem;
+        color: #666;
+    }
+
+    .demo-credentials code {
+        background: rgba(102, 126, 234, 0.2);
+        padding: 2px 8px;
+        border-radius: 5px;
+        color: #764ba2;
+        font-weight: 600;
+    }
+
+    .floating-icon {
+        position: absolute;
+        font-size: 3rem;
+        opacity: 0.1;
+        animation: float-icon 4s infinite ease-in-out;
+    }
+
+    @keyframes float-icon {
+        0%, 100% { transform: translateY(0) rotate(0deg); }
+        50% { transform: translateY(-30px) rotate(10deg); }
+    }
+
+    #icon1 { top: 10%; left: 10%; animation-delay: 0s; }
+    #icon2 { top: 20%; right: 15%; animation-delay: 1s; }
+    #icon3 { bottom: 20%; left: 15%; animation-delay: 2s; }
+    #icon4 { bottom: 30%; right: 10%; animation-delay: 1.5s; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <i class="fas fa-heartbeat floating-icon" id="icon1"></i>
+    <i class="fas fa-user-md floating-icon" id="icon2"></i>
+    <i class="fas fa-microscope floating-icon" id="icon3"></i>
+    <i class="fas fa-vial floating-icon" id="icon4"></i>
+
+    <div class="card auth-card">
+        <div class="auth-header">
+            <div class="auth-icon">
+                <i class="fas fa-sign-in-alt"></i>
+            </div>
+            <h2 class="auth-title">Welcome Back</h2>
+            <p class="auth-subtitle">Login to access your health dashboard</p>
+        </div>
+
+        <div class="demo-credentials">
+            <h6><i class="fas fa-info-circle"></i> Demo Credentials</h6>
+            <p><strong>Admin:</strong> Username: <code>admin</code> | Password: <code>admin123</code></p>
+            <p><strong>User:</strong> Create your own account</p>
+        </div>
+
+        <form method="POST">
+            <div class="input-group">
+                <span class="input-group-text">
+                    <i class="fas fa-user"></i>
+                </span>
+                <div class="form-floating">
+                    <input type="text" class="form-control" id="username" name="username" 
+                           placeholder="Username" required autofocus>
+                    <label for="username">Username</label>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <span class="input-group-text">
+                    <i class="fas fa-lock"></i>
+                </span>
+                <div class="form-floating">
+                    <input type="password" class="form-control" id="password" name="password" 
+                           placeholder="Password" required>
+                    <label for="password">Password</label>
+                </div>
+            </div>
+
+            <div class="remember-forgot">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="remember">
+                    <label class="form-check-label" for="remember">
+                        Remember me
+                    </label>
+                </div>
+                <a href="#" class="forgot-link">Forgot password?</a>
+            </div>
+
+            <button type="submit" class="btn btn-gradient btn-auth">
+                <i class="fas fa-arrow-right"></i> Login
+            </button>
+        </form>
+
+        <div class="auth-footer">
+            <p class="mb-0">Don't have an account? 
+                <a href="{{ url_for('register') }}" class="auth-link">Register now</a>
+            </p>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Add ripple effect on button click
+    document.querySelector('.btn-auth').addEventListener('click', function(e) {
+        const ripple = document.createElement('span');
+        ripple.style.position = 'absolute';
+        ripple.style.borderRadius = '50%';
+        ripple.style.background = 'rgba(255, 255, 255, 0.6)';
+        ripple.style.width = ripple.style.height = '100px';
+        ripple.style.left = e.clientX - this.offsetLeft - 50 + 'px';
+        ripple.style.top = e.clientY - this.offsetTop - 50 + 'px';
+        ripple.style.animation = 'ripple-animation 0.6s';
+        this.appendChild(ripple);
+        
+        setTimeout(() => ripple.remove(), 600);
+    });
+</script>
+{% endblock %}

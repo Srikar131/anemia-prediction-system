@@ -1,0 +1,322 @@
+{% extends "base.html" %}
+
+{% block title %}Edit User - Anemia Prediction System{% endblock %}
+
+{% block extra_css %}
+<style>
+    .edit-container {
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 0;
+    }
+
+    .edit-card {
+        max-width: 600px;
+        width: 100%;
+        padding: 50px;
+        animation: zoomIn 0.5s ease-out;
+    }
+
+    @keyframes zoomIn {
+        from {
+            transform: scale(0.8);
+            opacity: 0;
+        }
+        to {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+
+    .edit-header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .edit-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        font-size: 2rem;
+        color: white;
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% {
+            transform: scale(1);
+            box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.7);
+        }
+        50% {
+            transform: scale(1.05);
+            box-shadow: 0 0 0 15px rgba(102, 126, 234, 0);
+        }
+    }
+
+    .edit-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 10px;
+    }
+
+    .edit-subtitle {
+        color: #666;
+        font-size: 0.95rem;
+    }
+
+    .input-group {
+        margin-bottom: 25px;
+    }
+
+    .input-group-text {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        color: white;
+        border-radius: 15px 0 0 15px;
+        width: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .form-control, .form-select {
+        border: 2px solid #e0e0e0;
+        border-radius: 0 15px 15px 0;
+        padding: 15px 20px;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        transform: translateY(-2px);
+    }
+
+    .form-floating {
+        flex: 1;
+    }
+
+    .form-label {
+        color: #666;
+        font-weight: 500;
+    }
+
+    .btn-group-custom {
+        display: flex;
+        gap: 15px;
+        margin-top: 30px;
+    }
+
+    .btn-custom {
+        flex: 1;
+        padding: 15px;
+        font-size: 1.1rem;
+        border-radius: 15px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-custom::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.3);
+        transform: translate(-50%, -50%);
+        transition: width 0.6s, height 0.6s;
+    }
+
+    .btn-custom:hover::before {
+        width: 300px;
+        height: 300px;
+    }
+
+    .btn-custom:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-save {
+        background: linear-gradient(135deg, #43e97b, #38f9d7);
+        color: white;
+        border: none;
+    }
+
+    .btn-cancel {
+        background: linear-gradient(135deg, #f093fb, #f5576c);
+        color: white;
+        border: none;
+    }
+
+    .user-info-box {
+        background: rgba(102, 126, 234, 0.1);
+        border-left: 4px solid #667eea;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 30px;
+    }
+
+    .user-info-box h5 {
+        color: #667eea;
+        font-weight: 600;
+        margin-bottom: 15px;
+    }
+
+    .user-info-box p {
+        margin: 5px 0;
+        color: #666;
+    }
+
+    .user-info-box strong {
+        color: #333;
+    }
+
+    .role-info {
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 10px;
+        margin-top: 10px;
+        font-size: 0.9rem;
+        color: #666;
+    }
+
+    .role-info i {
+        color: #667eea;
+        margin-right: 8px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="edit-container">
+    <div class="card edit-card">
+        <div class="edit-header">
+            <div class="edit-icon">
+                <i class="fas fa-user-edit"></i>
+            </div>
+            <h2 class="edit-title">Edit User</h2>
+            <p class="edit-subtitle">Update user information and permissions</p>
+        </div>
+
+        <div class="user-info-box">
+            <h5><i class="fas fa-info-circle"></i> Current User Details</h5>
+            <p><strong>User ID:</strong> #{{ user[0] }}</p>
+            <p><strong>Created:</strong> {{ user[5][:10] if user[5] else 'N/A' }}</p>
+        </div>
+
+        <form method="POST">
+            <div class="input-group">
+                <span class="input-group-text">
+                    <i class="fas fa-user"></i>
+                </span>
+                <div class="form-floating">
+                    <input type="text" class="form-control" id="username" name="username" 
+                           placeholder="Username" value="{{ user[1] }}" required>
+                    <label for="username">Username</label>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <span class="input-group-text">
+                    <i class="fas fa-envelope"></i>
+                </span>
+                <div class="form-floating">
+                    <input type="email" class="form-control" id="email" name="email" 
+                           placeholder="Email" value="{{ user[2] }}" required>
+                    <label for="email">Email Address</label>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <span class="input-group-text">
+                    <i class="fas fa-shield-alt"></i>
+                </span>
+                <div class="form-floating">
+                    <select class="form-select" id="role" name="role" required>
+                        <option value="user" {% if user[4] == 'user' %}selected{% endif %}>User</option>
+                        <option value="admin" {% if user[4] == 'admin' %}selected{% endif %}>Admin</option>
+                    </select>
+                    <label for="role">User Role</label>
+                </div>
+            </div>
+
+            <div class="role-info">
+                <i class="fas fa-lightbulb"></i>
+                <strong>Role Information:</strong><br>
+                <strong>User:</strong> Can make predictions and view analytics<br>
+                <strong>Admin:</strong> Full access including user management
+            </div>
+
+            <div class="btn-group-custom">
+                <button type="submit" class="btn btn-custom btn-save">
+                    <i class="fas fa-save"></i> Save Changes
+                </button>
+                <a href="{{ url_for('admin_dashboard') }}" class="btn btn-custom btn-cancel">
+                    <i class="fas fa-times"></i> Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Form validation
+    document.querySelector('form').addEventListener('submit', function(e) {
+        const username = document.getElementById('username').value.trim();
+        const email = document.getElementById('email').value.trim();
+
+        if (username.length < 3) {
+            e.preventDefault();
+            alert('Username must be at least 3 characters long!');
+            return false;
+        }
+
+        if (!email.includes('@')) {
+            e.preventDefault();
+            alert('Please enter a valid email address!');
+            return false;
+        }
+    });
+
+    // Add ripple effect on button click
+    document.querySelectorAll('.btn-custom').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            const ripple = document.createElement('span');
+            ripple.style.position = 'absolute';
+            ripple.style.borderRadius = '50%';
+            ripple.style.background = 'rgba(255, 255, 255, 0.6)';
+            ripple.style.width = ripple.style.height = '100px';
+            
+            const rect = this.getBoundingClientRect();
+            ripple.style.left = e.clientX - rect.left - 50 + 'px';
+            ripple.style.top = e.clientY - rect.top - 50 + 'px';
+            ripple.style.animation = 'ripple-animation 0.6s';
+            
+            this.appendChild(ripple);
+            setTimeout(() => ripple.remove(), 600);
+        });
+    });
+
+    // Role selection visual feedback
+    document.getElementById('role').addEventListener('change', function() {
+        const roleInfo = document.querySelector('.role-info');
+        roleInfo.style.animation = 'none';
+        setTimeout(() => {
+            roleInfo.style.animation = 'fadeInUp 0.5s ease-out';
+        }, 10);
+    });
+</script>
+{% endblock %}

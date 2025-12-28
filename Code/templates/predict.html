@@ -1,0 +1,439 @@
+{% extends "base.html" %}
+
+{% block title %}Predict - Anemia Prediction System{% endblock %}
+
+{% block extra_css %}
+<style>
+    .predict-container {
+        padding: 40px 0;
+    }
+
+    .predict-header {
+        text-align: center;
+        margin-bottom: 50px;
+        animation: fadeInDown 0.6s ease-out;
+    }
+
+    .predict-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: white;
+        text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        margin-bottom: 15px;
+    }
+
+    .predict-subtitle {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 1.1rem;
+    }
+
+    .form-card {
+        padding: 40px;
+        animation: fadeInUp 0.6s ease-out;
+    }
+
+    .form-section-title {
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: #667eea;
+        margin-bottom: 25px;
+        padding-bottom: 10px;
+        border-bottom: 3px solid #667eea;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .input-wrapper {
+        margin-bottom: 25px;
+        animation: slideInRight 0.6s ease-out;
+        animation-fill-mode: both;
+    }
+
+    .input-wrapper:nth-child(1) { animation-delay: 0.1s; }
+    .input-wrapper:nth-child(2) { animation-delay: 0.2s; }
+    .input-wrapper:nth-child(3) { animation-delay: 0.3s; }
+    .input-wrapper:nth-child(4) { animation-delay: 0.4s; }
+    .input-wrapper:nth-child(5) { animation-delay: 0.5s; }
+
+    @keyframes slideInRight {
+        from {
+            transform: translateX(50px);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+
+    .input-label {
+        display: block;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 10px;
+        font-size: 1rem;
+    }
+
+    .input-label i {
+        color: #667eea;
+        margin-right: 8px;
+    }
+
+    .form-control, .form-select {
+        border: 2px solid #e0e0e0;
+        border-radius: 15px;
+        padding: 15px 20px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        transform: translateY(-2px);
+    }
+
+    .input-help {
+        font-size: 0.85rem;
+        color: #999;
+        margin-top: 5px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .btn-predict {
+        width: 100%;
+        padding: 18px;
+        font-size: 1.2rem;
+        border-radius: 15px;
+        margin-top: 30px;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .btn-predict:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-predict::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+        transition: left 0.5s;
+    }
+
+    .btn-predict:hover::before {
+        left: 100%;
+    }
+
+    .result-card {
+        padding: 40px;
+        margin-top: 30px;
+        animation: bounceIn 0.6s ease-out;
+    }
+
+    @keyframes bounceIn {
+        0% {
+            transform: scale(0.3);
+            opacity: 0;
+        }
+        50% {
+            transform: scale(1.05);
+        }
+        70% {
+            transform: scale(0.9);
+        }
+        100% {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+
+    .result-icon {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        font-size: 3rem;
+        color: white;
+        animation: pulse 2s infinite;
+    }
+
+    .result-success {
+        background: linear-gradient(135deg, #00C851, #007E33);
+    }
+
+    .result-danger {
+        background: linear-gradient(135deg, #ff4444, #CC0000);
+    }
+
+    @keyframes pulse {
+        0%, 100% {
+            transform: scale(1);
+            box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.3);
+        }
+        50% {
+            transform: scale(1.05);
+            box-shadow: 0 0 0 20px rgba(0, 0, 0, 0);
+        }
+    }
+
+    .result-title {
+        font-size: 2rem;
+        font-weight: 700;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .result-probability {
+        text-align: center;
+        font-size: 1.2rem;
+        margin-bottom: 30px;
+        padding: 15px;
+        background: rgba(102, 126, 234, 0.1);
+        border-radius: 15px;
+    }
+
+    .result-details {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 15px;
+        margin-top: 20px;
+    }
+
+    .info-box {
+        background: rgba(102, 126, 234, 0.1);
+        border-left: 4px solid #667eea;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 30px;
+    }
+
+    .info-box h5 {
+        color: #667eea;
+        font-weight: 600;
+        margin-bottom: 15px;
+    }
+
+    .info-box ul {
+        margin: 0;
+        padding-left: 20px;
+    }
+
+    .info-box li {
+        margin-bottom: 8px;
+        color: #666;
+    }
+
+    .range-indicator {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.85rem;
+        color: #999;
+        margin-top: 5px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="predict-container">
+    <div class="predict-header">
+        <h1 class="predict-title">
+            <i class="fas fa-vial"></i> Anemia Prediction
+        </h1>
+        <p class="predict-subtitle">Enter your blood test parameters for instant analysis</p>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card form-card">
+                <div class="info-box">
+                    <h5><i class="fas fa-info-circle"></i> Required Blood Parameters</h5>
+                    <ul>
+                        <li><strong>Gender:</strong> Select your biological gender</li>
+                        <li><strong>Hemoglobin:</strong> Red blood cell protein level (g/dL)</li>
+                        <li><strong>MCH:</strong> Mean Corpuscular Hemoglobin (pg)</li>
+                        <li><strong>MCHC:</strong> Mean Corpuscular Hemoglobin Concentration (g/dL)</li>
+                        <li><strong>MCV:</strong> Mean Corpuscular Volume (fL)</li>
+                    </ul>
+                </div>
+
+                <form method="POST">
+                    <div class="form-section-title">
+                        <i class="fas fa-user-circle"></i> Personal Information
+                    </div>
+
+                    <div class="input-wrapper">
+                        <label class="input-label">
+                            <i class="fas fa-venus-mars"></i> Gender
+                        </label>
+                        <select class="form-select" name="gender" required>
+                            <option value="">Select Gender</option>
+                            <option value="0">Male</option>
+                            <option value="1">Female</option>
+                        </select>
+                    </div>
+
+                    <div class="form-section-title">
+                        <i class="fas fa-flask"></i> Blood Test Results
+                    </div>
+
+                    <div class="input-wrapper">
+                        <label class="input-label">
+                            <i class="fas fa-tint"></i> Hemoglobin (g/dL)
+                        </label>
+                        <input type="number" step="0.1" class="form-control" name="hemoglobin" 
+                               placeholder="e.g., 12.5" required min="0" max="25">
+                        <div class="input-help">
+                            <i class="fas fa-chart-line"></i> Normal range: Male (13.5-17.5), Female (12.0-15.5)
+                        </div>
+                        <div class="range-indicator">
+                            <span>Low: &lt;12</span>
+                            <span>Normal: 12-17</span>
+                            <span>High: &gt;17</span>
+                        </div>
+                    </div>
+
+                    <div class="input-wrapper">
+                        <label class="input-label">
+                            <i class="fas fa-circle"></i> MCH - Mean Corpuscular Hemoglobin (pg)
+                        </label>
+                        <input type="number" step="0.1" class="form-control" name="mch" 
+                               placeholder="e.g., 28.5" required min="0" max="50">
+                        <div class="input-help">
+                            <i class="fas fa-chart-line"></i> Normal range: 27.0 - 32.0 pg
+                        </div>
+                        <div class="range-indicator">
+                            <span>Low: &lt;27</span>
+                            <span>Normal: 27-32</span>
+                            <span>High: &gt;32</span>
+                        </div>
+                    </div>
+
+                    <div class="input-wrapper">
+                        <label class="input-label">
+                            <i class="fas fa-percentage"></i> MCHC - Mean Corpuscular Hemoglobin Concentration (g/dL)
+                        </label>
+                        <input type="number" step="0.1" class="form-control" name="mchc" 
+                               placeholder="e.g., 33.5" required min="0" max="50">
+                        <div class="input-help">
+                            <i class="fas fa-chart-line"></i> Normal range: 32.0 - 36.0 g/dL
+                        </div>
+                        <div class="range-indicator">
+                            <span>Low: &lt;32</span>
+                            <span>Normal: 32-36</span>
+                            <span>High: &gt;36</span>
+                        </div>
+                    </div>
+
+                    <div class="input-wrapper">
+                        <label class="input-label">
+                            <i class="fas fa-microscope"></i> MCV - Mean Corpuscular Volume (fL)
+                        </label>
+                        <input type="number" step="0.1" class="form-control" name="mcv" 
+                               placeholder="e.g., 87.5" required min="0" max="150">
+                        <div class="input-help">
+                            <i class="fas fa-chart-line"></i> Normal range: 80.0 - 100.0 fL
+                        </div>
+                        <div class="range-indicator">
+                            <span>Low: &lt;80</span>
+                            <span>Normal: 80-100</span>
+                            <span>High: &gt;100</span>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-gradient btn-predict">
+                        <i class="fas fa-brain"></i> Analyze Blood Results
+                    </button>
+                </form>
+            </div>
+
+            {% if result %}
+            <div class="card result-card">
+                <div class="result-icon result-{{ result.color }}">
+                    <i class="fas fa-{{ 'exclamation-triangle' if result.prediction == 1 else 'check-circle' }}"></i>
+                </div>
+                <h2 class="result-title text-{{ result.color }}">
+                    {{ result.status }}
+                </h2>
+                <div class="result-probability">
+                    <strong>Prediction Confidence:</strong> {{ result.probability }}%
+                </div>
+
+                <div class="result-details">
+                    {% if result.prediction == 1 %}
+                    <div class="alert alert-danger">
+                        <h5><i class="fas fa-heartbeat"></i> Important Notice</h5>
+                        <p class="mb-2">Our AI model has detected indicators of anemia in your blood parameters. Please note:</p>
+                        <ul class="mb-0">
+                            <li>This is a preliminary screening tool, not a medical diagnosis</li>
+                            <li>Consult with a healthcare professional for proper diagnosis</li>
+                            <li>Bring your blood test results to your doctor</li>
+                            <li>Follow up with appropriate medical testing</li>
+                        </ul>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-success">
+                        <h5><i class="fas fa-heart"></i> Good News!</h5>
+                        <p class="mb-2">Your blood parameters appear to be within normal ranges. However:</p>
+                        <ul class="mb-0">
+                            <li>Continue regular health checkups</li>
+                            <li>Maintain a balanced diet rich in iron</li>
+                            <li>Monitor any symptoms like fatigue or weakness</li>
+                            <li>Consult a doctor if you have concerns</li>
+                        </ul>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="text-center mt-4">
+                    <a href="{{ url_for('predict') }}" class="btn btn-gradient">
+                        <i class="fas fa-redo"></i> New Prediction
+                    </a>
+                    <a href="{{ url_for('analytics') }}" class="btn btn-outline-primary">
+                        <i class="fas fa-chart-bar"></i> View Analytics
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+    // Add input validation and formatting
+    document.querySelectorAll('input[type="number"]').forEach(input => {
+        input.addEventListener('input', function() {
+            this.classList.remove('is-invalid', 'is-valid');
+            
+            const value = parseFloat(this.value);
+            const min = parseFloat(this.min);
+            const max = parseFloat(this.max);
+            
+            if (value < min || value > max) {
+                this.classList.add('is-invalid');
+            } else if (this.value) {
+                this.classList.add('is-valid');
+            }
+        });
+    });
+
+    // Form submission animation
+    document.querySelector('form').addEventListener('submit', function(e) {
+        const btn = document.querySelector('.btn-predict');
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Analyzing...';
+        btn.disabled = true;
+    });
+</script>
+{% endblock %}
